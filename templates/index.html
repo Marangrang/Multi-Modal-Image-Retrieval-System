@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Search by Voice, Text, or Audio File</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        #query {
+            width: 300px;
+            padding: 10px;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        #results {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
+            align-items: center;
+        }
+        img {
+            width: 100%;
+            max-width: 600px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+        #status {
+            margin-top: 10px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Image Search by Voice, Text, or Audio File</h1>
+        
+        <input type="text" id="query" placeholder="Type or use voice to search...">
+        <button onclick="search()">Search by Text</button>
+        <button onclick="startVoiceSearch()">Search by Voice</button>
+        <input type="file" id="audioFile" accept="audio/wav, audio/mp3" onchange="uploadAudioFile()">
+        <button onclick="clearSearch()">Clear</button>
+
+        <p id="status"></p>
+        <div id="results"></div>
+    </div>
+
+    <script>
+        let mediaRecorder;
+        let audioChunks = [];
+
+        async function startVoiceSearch() {
+            try {
+                document.getElementById("status").innerText = "Recording...";
+                audioChunks = [];
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                
+                mediaRecorder.ondataavailable = event => audioChunks.push(event.data);
+                mediaRecorder.onstop = async () => {
+                    document.getElementById("status").innerText = "Processing...";
+                    const mimeType = mediaRecorder.mimeType || 'audio/webm';
+                    const audioBlob = new Blob(audioChunks, { type: mimeType });
+
+                    const formData = new FormData();
+                    formData.append("audio", audioBlob);
+
+                    const response = await fetch("/transcribe", { method: "POST", body: formData });
+                    const data = await response.json();
+
+                    document.getElementById("status").innerText = "";
+                    if (data.text.trim()) {
+                        document.getElementById("query").value = data.text.trim();
+                        search();
+                    } else {
+                        alert("Sorry, I couldn't transcribe the audio.");
+                    }
+                };
+                
+                mediaRecorder.start();
+                setTimeout(() => mediaRecorder.stop(), 5000);
+            } catch (error) {
+                alert("Microphone access is required for voice search.");
+                console.error("Error accessing microphone:", error);
+                document.getElementById("status").innerText = "";
+            }
+        }
+
+        async function uploadAudioFile() {
+            const fileInput = document.getElementById("audioFile");
+            const file = fileInput.files[0];
+            if (!file) {
+                alert("Please upload an audio file.");
+                return;
+            }
+            if (!["audio/wav", "audio/mp3"].includes(file.type)) {
+                alert("Only WAV and MP3 files are supported.");
+                return;
+            }
+
+            document.getElementById("status").innerText = "Processing uploaded audio...";
+            const formData = new FormData();
+            formData.append("audio", file);
+
+            const response = await fetch("/transcribe", { method: "POST", body: formData });
+            const data = await response.json();
+
+            document.getElementById("status").innerText = "";
+            if (data.text.trim()) {
+                document.getElementById("query").value = data.text.trim();
+                search();
+            } else {
+                alert("Sorry, I couldn't transcribe the audio.");
+            }
+        }
+
+        async function search() {
+            const query = document.getElementById("query").value.trim();
+            if (!query) {
+                alert("Please enter a query.");
+                return;
+            }
+            document.getElementById("status").innerText = "Searching...";
+            
+            const response = await fetch("/search", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ query })
+            });
+            const data = await response.json();
+            
+            const resultsDiv = document.getElementById("results");
+            resultsDiv.innerHTML = "";
+
+            if (data.error) {
+                resultsDiv.innerHTML = `<p class="error">${data.error}</p>`;
+                return;
+            }
+
+            data.results.forEach(img => {
+                const imgElement = document.createElement("img");
+                imgElement.src = img;
+                imgElement.alt = "Search Result";
+                resultsDiv.appendChild(imgElement);
+            });
+
+            document.getElementById("status").innerText = "";
+        }
+
+        function clearSearch() {
+            document.getElementById("query").value = "";
+            document.getElementById("audioFile").value = "";
+            document.getElementById("results").innerHTML = "";
+            document.getElementById("status").innerText = "";
+        }
+    </script>
+</body>
+</html>
