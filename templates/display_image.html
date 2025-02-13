@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image-to-Speech</title>
+    <script>
+        function uploadImage() {
+            var formData = new FormData();
+            var file = document.getElementById('image').files[0];
+            formData.append("image", file);
+
+            fetch('/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === "success") {
+                    alert("Image description: " + data.description);
+                } else {
+                    alert("Error: " + data.error);
+                }
+            })
+            .catch(error => {
+                alert("Error: " + error);
+            });
+        }
+    </script>
+</head>
+<body>
+    <div style="text-align: center; margin-top: 50px;">
+        <h1>Image-to-Speech Demo</h1>
+        <input type="file" id="image" accept="image/*"><br><br>
+        <button onclick="uploadImage()">Upload Image and Speak</button>
+    </div>
+</body>
+</html>
