@@ -1,0 +1,34 @@
+# Whisper ASR dependencies
+whisper
+openai-whisper
+ffmpeg-python
+
+# Torch and Deep Learning
+torch
+torchaudio
+torchvision
+transformers
+
+# Image Processing
+opencv-python
+Pillow
+numpy
+
+# NLP for text retrieval
+nltk
+sentence-transformers
+
+# Machine Learning utilities
+scikit-learn
+scipy
+
+# Flask 
+flask
+flask-cors
+
+# Miscellaneous
+tqdm
+matplotlib
+pandas
+requests
+kaggle
