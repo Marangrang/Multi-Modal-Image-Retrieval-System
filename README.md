@@ -147,10 +147,11 @@ git clone https://github.com:Marangrang/Multi-Modal-Image-Retrieval-System.git
 cd Multi-Modal-Image-Retrieval
 
 2. Create a Virtual Environment (optional but recommended)
+   
 python -m venv venv
 source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
 
-3. Install Dependencies Ensure you are in the project directory and then run:
+4. Install Dependencies Ensure you are in the project directory and then run:
 
 pip install -r requirements.txt
 
@@ -169,13 +170,19 @@ Once you have installed the dependencies and set up the environment, you can run
 - mv download_folder/kaggle.json ~/.kaggle/
 - chmod 600 ~/.kaggle/kaggle.json  
 
+2. Dataset Preparation
+   
 python scripts/data.py
 
-2. Run the Main Application In your terminal, run:
+3. Generating image embeddings
+
+python scripts/Feature_Extraction.py
+
+4. Run the Main Application In your terminal, run:
 
 python scripts/app.py
 
-3. Running with Specific Configurations (if applicable) If your system requires configuration files or specific environment variables, make sure to specify them:
+5. Running with Specific Configurations (if applicable) If your system requires configuration files or specific environment variables, make sure to specify them:
 
 export CONFIG_PATH=/path/to/config
 python scripts/app.py
