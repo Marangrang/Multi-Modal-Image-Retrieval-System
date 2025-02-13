@@ -32,3 +32,4 @@ matplotlib
 pandas
 requests
 kaggle
+h5py
