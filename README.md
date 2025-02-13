@@ -30,6 +30,9 @@ The **Multi-Modal Image Retrieval System** is designed to process and retrieve i
 
 🛠️ Architecture Diagram
 
+![Architecture](https://github.com/user-attachments/assets/86aad9d7-5695-4d58-8653-45fab52ca476)
+
+
 [Uploadin<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36" version="26.0.12">
   <diagram id="C5RBs43oDa-KdzZeNtuy" name="Page-1">
     <mxGraphModel dx="1120" dy="426" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
@@ -181,14 +184,6 @@ python scripts/app.py
 #### File Structure
 
 Multi-Modal-Image-Retrieval
-│── data/                      # Stores dataset images
-│   ├── dataset_images         # sample 500 images
-│── scripts/                   # Processing scripts
-│   ├── app.py                 # Handles dataset download & extraction
-│   ├── data.py                # Selects a subset of images
-│   ├── Feature_Extraction.py  # retrieve top k images
-│   ├── TTS.py                 # Text To Speech
-│── templates/                 # Stores HTML
-│   ├── index.html             # HTML file
-│── requirements.txt           # Dependencies
-│── README.md                  # Documentation
+
+![Screenshot 2025-02-13 164347](https://github.com/user-attachments/assets/2d8e5345-1384-4cda-9678-a296c2a8d813)
+
